@@ -1,0 +1,29 @@
+name: CICD for tourism prediction
+
+on: [push]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    container: ghcr.io/iterative/cml:0-dvc2-base1
+
+    steps:
+       - name: checkout code
+         uses: actions/checkout@v3
+
+       - name: set up CML
+         uses: iterative/setup-cml@v1
+
+       - name: Train the model
+         run: |
+             pip install requirements.txt
+             python main.py
+
+       - name: write report
+         env:
+            REPO_TOKEN: ${{secrets.SECRETS}}
+         echo: "Model performance metricies" > report.md
+         cat results.txt >> report.md
+
+        
